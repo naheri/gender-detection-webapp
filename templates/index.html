@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index_style.css') }}">
+    <title>gender prediction</title>
+</head>
+<body>
+    <h1>Gender Prediction</h1>
+    <div class="container">
+            <form action="/gender_from_image" method="post" id='image-prediction' enctype="multipart/form-data">
+                <div id="image-drop-zone" style="height: 200px; width: 300px; border: 2px dashed #ccc; text-align: center; line-height: 200px;">
+                    Drop or Click to upload your image
+                </div>
+                <input type="file" name="test_image" id="image-input" accept="image/*" style="display: none;">
+                <div id="button-container">
+                    <button type="submit" id="submit-button" class="button-10" disabled>Submit</button>
+                </div>
+                
+                <script>
+                    var dropZone = document.getElementById('image-drop-zone');
+                    var imageInput = document.getElementById('image-input');
+                    var submitButton = document.getElementById('submit-button');
+                
+                    dropZone.addEventListener('dragover', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        dropZone.style.backgroundColor = '#eee';
+                    });
+                
+                    dropZone.addEventListener('dragleave', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        dropZone.style.backgroundColor = '';
+                    });
+                
+                    dropZone.addEventListener('drop', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        dropZone.style.backgroundColor = '';
+                
+                        var file = e.dataTransfer.files[0];
+                        if (!file.type.startsWith('image/')) {
+                            alert('Invalid file type. Please drop an image file.');
+                            return;
+                        }
+                
+                        // display the image
+                        var img = document.createElement('img');
+                        img.src = URL.createObjectURL(file);
+                        img.style.maxWidth = '100%';
+                        img.style.maxHeight = '100%';
+                        dropZone.innerHTML = '';
+                        dropZone.appendChild(img);
+                        submitButton.disabled = false;
+                        // prevent future drops
+                        dropZone.removeEventListener('dragover', this);
+                        dropZone.removeEventListener('dragleave', this);
+                        dropZone.removeEventListener('drop', this);
+                        dropZone.removeEventListener('click', this);
+                    });
+                
+                    dropZone.addEventListener('click', function() {
+                        imageInput.click();
+                    });
+                
+                    imageInput.addEventListener('change', function() {
+                        var file = imageInput.files[0];
+                        if (!file.type.startsWith('image/')) {
+                            alert('Invalid file type. Please select an image file.');
+                            return;
+                        }
+                
+                        // display the image
+                        var img = document.createElement('img');
+                        img.src = URL.createObjectURL(file);
+                        img.style.maxWidth = '100%';
+                        img.style.maxHeight = '100%';
+                        dropZone.innerHTML = '';
+                        dropZone.appendChild(img);
+                        submitButton.disabled = false;
+                        dropZone.removeEventListener('click', this);
+                    });
+                </script>
+            </form> 
+
+            <div class="button-zone">
+                <form action="/get_gender_start" method="post">
+                    <p>Try the power of CNN with your webcam :</p>
+                    <input type="submit" value="start/open camera" onclick="alertBox()" class="button-10">
+                  </form>
+                  <form action="/get_gender_stop" method="post">
+                    <input type="submit" value="stop/close camera" class="button-10">
+                  </form>
+                  <form action="/video_feed_page" method="post">
+                    <input type="submit" value="open webcam feed" class="button-10">
+                  </form>
+            </div>
+
+        
+    </div>
+    <script>
+        // affiche une alerte sous quand on clique sur le bouton
+function alertBox() {
+  alert("The webcam is opening, wait a minute...");
+}
+        document.querySelectorAll(".drop-zone__input").forEach((inputElement) => {
+  const dropZoneElement = inputElement.closest(".drop-zone");
+
+  dropZoneElement.addEventListener("click", (e) => {
+    inputElement.click();
+  });
+
+  inputElement.addEventListener("change", (e) => {
+    if (inputElement.files.length) {
+      updateThumbnail(dropZoneElement, inputElement.files[0]);
+    }
+  });
+
+  dropZoneElement.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropZoneElement.classList.add("drop-zone--over");
+  });
+
+  ["dragleave", "dragend"].forEach((type) => {
+    dropZoneElement.addEventListener(type, (e) => {
+      dropZoneElement.classList.remove("drop-zone--over");
+    });
+  });
+
+  dropZoneElement.addEventListener("drop", (e) => {
+    e.preventDefault();
+
+    if (e.dataTransfer.files.length) {
+      inputElement.files = e.dataTransfer.files;
+      updateThumbnail(dropZoneElement, e.dataTransfer.files[0]);
+    }
+
+    dropZoneElement.classList.remove("drop-zone--over");
+  });
+});
+
+
+
+    </script>
+</body>
+</html>

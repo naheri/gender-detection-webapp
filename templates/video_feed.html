@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/video_feed_style.css') }}">
+    <title>webcam</title>
+</head>
+<body>
+    <div id = "webcam">
+        <img src="{{ url_for('video_feed') }}" alt="retour-caméra" id="webcam-feed">
+        <form action="/get_gender_stop" method="post">
+            <input type="submit" value="stop/close camera" class="stop-btn button-24 bounce">
+        </form>
+    </div>
+</body>
+</html>
